@@ -84,23 +84,27 @@ def main():
     if not testing:
         eyelinker.start()
 
-    # Practice until participant wants to stop
-    # practice(settings)
+    # Initialise stimuli
+    stimuli = initialise_all_stimuli(settings)
+
+    # Practice first part until participant wants to stop
+    practice(start_block_type, stimuli, settings)
 
     # Initialise some stuff
     start_of_experiment = time()
     data = []
     current_trial = 0
     finished_early = True
-    mouse = event.Mouse(visible=False, win=settings["window"])
-    stimuli = initialise_all_stimuli(settings)
+    event.Mouse(visible=False, win=settings["window"])
 
     # Start experiment
     try:
         blocks = create_block_list(N_BLOCKS, start_block_type)
 
         for block_nr, block_type in enumerate(
-            ["colour", "duration"] if testing else blocks
+            [start_block_type, "duration" if start_block_type == "colour" else "colour"]
+            if testing
+            else blocks
         ):
 
             # Pseudo-randomly create conditions and target locations (so they're weighted)
