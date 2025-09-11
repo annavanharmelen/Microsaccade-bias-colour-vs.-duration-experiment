@@ -12,7 +12,7 @@ from time import time, sleep
 from response import get_colour_response, get_duration_response, check_quit
 from stimuli import (
     draw_fixation_dot,
-    create_stimuli_frame,
+    create_stimulus_frame,
     create_cue_frame,
     show_text,
 )
@@ -35,32 +35,32 @@ def generate_trial_characteristics(conditions, settings):
     # Decide on random colours of stimulus
     stimuli_colours = random.sample(settings["colours"], 2)
 
-    # Determine target colour and position
+    # Determine target colours, durations, orders and position
     if target_position == "left":
-        target_colour, distractor_colour = stimuli_colours
         item_order = [target_item, 2 if target_item == 1 else 1]
-        durations = [target_duration, list(duration_dict.values())[0]]
-        duration_cats = [target_duration_cat, list(duration_dict.keys())[0]]
-
     elif target_position == "right":
-        distractor_colour, target_colour = stimuli_colours
         item_order = [2 if target_item == 1 else 1, target_item]
-        durations = [list(duration_dict.values())[0], target_duration]
-        duration_cats = [list(duration_dict.keys())[0], target_duration_cat]
-
     else:
-        raise Exception(f"Expected 1 or 2, but received {target_item!r}.")
+        raise Exception(f"Expected 'left' or 'right', but received {target_position!r}.")
 
     if target_item == 1:
+        target_colour, distractor_colour = stimuli_colours
         item_positions = [
             target_position,
             "left" if target_position == "right" else "right",
         ]
+        durations = [target_duration, list(duration_dict.values())[0]]
+        duration_cats = [target_duration_cat, list(duration_dict.keys())[0]]
     elif target_item == 2:
+        distractor_colour, target_colour = stimuli_colours
         item_positions = [
             "left" if target_position == "right" else "right",
             target_position,
         ]
+        durations = [list(duration_dict.values())[0], target_duration]
+        duration_cats = [list(duration_dict.keys())[0], target_duration_cat]
+    else:
+        raise Exception(f"Expected 1 or 2, but received {target_item!r}.")
 
     return {
         "ITI": random.randint(500, 800),
