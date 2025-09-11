@@ -121,7 +121,7 @@ def show_text(input, window, pos=(0, 0), colour="#ffffff"):
     textstim.draw()
 
 
-def create_stimuli_frame(stimuli, colour, position, settings, fix_colour="#eaeaea"):
+def create_stimulus_frame(stimuli, colour, position, settings, fix_colour="#eaeaea"):
     draw_fixation_dot(stimuli["fixation_dot"], settings, fix_colour)
     draw_item(stimuli["stimulus"], colour, position, settings)
 
