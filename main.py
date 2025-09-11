@@ -171,6 +171,10 @@ def main():
                     )
                 if not testing:
                     eyelinker.start()
+
+                # Let participants practice second part before continueing
+                practice(blocks[block_nr + 1], stimuli, settings)
+
             elif block_nr + 1 < N_BLOCKS:
                 while calibrated:
                     calibrated = block_break(
