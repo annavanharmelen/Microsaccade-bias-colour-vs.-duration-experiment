@@ -30,8 +30,8 @@ from block import (
     quick_finish,
 )
 
-N_BLOCKS = 16
-TRIALS_PER_BLOCK = 48
+N_BLOCKS = 20
+TRIALS_PER_BLOCK = 40
 
 
 def main():
