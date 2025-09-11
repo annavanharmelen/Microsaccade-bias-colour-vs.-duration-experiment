@@ -73,12 +73,12 @@ def evaluate_colour_response(selected_colour, target_colour, colours):
     target_colour_id = colours.index(target_colour) + 1
 
     # Calculate the distance between the two colours
-    rgb_distance = abs(selected_colour_id - target_colour_id)
+    rgb_distance = selected_colour_id - target_colour_id
 
-    if rgb_distance > 180:
-        abs_rgb_distance = 360 - rgb_distance
+    if abs(rgb_distance) > 180:
+        abs_rgb_distance = 360 - abs(rgb_distance)
     else:
-        abs_rgb_distance = rgb_distance
+        abs_rgb_distance = abs(rgb_distance)
 
     rgb_distance_signed = ((selected_colour_id - target_colour_id + 180) % 360) - 180
 
