@@ -96,6 +96,7 @@ def get_colour_response(
     stimuli,
     target_colour,
     target_duration,
+    target_duration_cat,
     block_type,
     target_position,
     target_number,
@@ -143,7 +144,7 @@ def get_colour_response(
             "response_onset",
             block_type,
             target_position,
-            target_duration,
+            target_duration_cat,
             target_number,
         )
         eyetracker.tracker.send_message(f"trig{trigger}")
@@ -188,7 +189,7 @@ def get_colour_response(
             "response_offset",
             block_type,
             target_position,
-            target_duration,
+            target_duration_cat,
             target_number,
         )
         eyetracker.tracker.send_message(f"trig{trigger}")
@@ -219,6 +220,7 @@ def evaluate_duration_response(target_duration, response_duration):
 def get_duration_response(
     stimuli,
     target_duration,
+    target_duration_cat,
     block_type,
     target_position,
     target_number,
@@ -253,7 +255,7 @@ def get_duration_response(
             "response_onset",
             block_type,
             target_position,
-            target_duration,
+            target_duration_cat,
             target_number,
         )
         eyetracker.tracker.send_message(f"trig{trigger}")
@@ -272,7 +274,7 @@ def get_duration_response(
             "response_offset",
             block_type,
             target_position,
-            target_duration,
+            target_duration_cat,
             target_number,
         )
         eyetracker.tracker.send_message(f"trig{trigger}")
