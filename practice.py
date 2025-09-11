@@ -88,7 +88,7 @@ def practice_colour_wheel(stimuli, settings):
 
     except KeyboardInterrupt:
         avg_score = round(mean(performance)) if len(performance) > 0 else 0
-        
+
         show_text(
             f"During this practice, your average score was {avg_score}. "
             "\nYou decided to stop practising the response dial. "
@@ -98,7 +98,7 @@ def practice_colour_wheel(stimuli, settings):
         )
         settings["window"].flip()
         wait_for_key(["space"], settings["keyboard"])
-        
+
         # Make sure the keystroke from moving to the next part isn't saved
         settings["keyboard"].clearEvents()
 
@@ -122,7 +122,7 @@ def practice_duration_response(stimuli, settings):
                 ("left", random.choice(["short", "long"]), 1), settings
             )
 
-            create_stimulus_frame(stimuli, [0,0,1], "middle", settings)
+            create_stimulus_frame(stimuli, [0, 0, 1], "middle", settings)
             settings["window"].flip()
             core.wait(stimulus["target_duration"] / 1000)
 
