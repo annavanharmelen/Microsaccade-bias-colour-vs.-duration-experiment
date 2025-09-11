@@ -120,7 +120,7 @@ def single_trial(
         ),
         (
             durations[0] / 1000,
-            lambda: create_stimuli_frame(
+            lambda: create_stimulus_frame(
                 stimuli, stimuli_colours[0], positions[0], settings
             ),
             "stimulus_onset_1",
@@ -128,7 +128,7 @@ def single_trial(
         (0.75, lambda: draw_fixation_dot(stimuli["fixation_dot"], settings), None),
         (
             durations[1] / 1000,
-            lambda: create_stimuli_frame(
+            lambda: create_stimulus_frame(
                 stimuli, stimuli_colours[1], positions[1], settings
             ),
             "stimulus_onset_2",
@@ -147,7 +147,7 @@ def single_trial(
         # Send trigger if not testing
         if not testing and frame:
             trigger = get_trigger(
-                frame, block_type, target_position, target_duration, target_number
+                frame, block_type, target_position, target_duration_cat, target_number
             )
             eyetracker.tracker.send_message(f"trig{trigger}")
 
@@ -168,6 +168,7 @@ def single_trial(
             stimuli,
             target_colour,
             target_duration,
+            target_duration_cat,
             block_type,
             target_position,
             target_number,
@@ -179,6 +180,7 @@ def single_trial(
         response = get_duration_response(
             stimuli,
             target_duration,
+            target_duration_cat,
             block_type,
             target_position,
             target_number,
@@ -198,7 +200,7 @@ def single_trial(
             "feedback_onset",
             block_type,
             target_position,
-            target_duration,
+            target_duration_cat,
             target_number,
         )
         eyetracker.tracker.send_message(f"trig{trigger}")
@@ -211,7 +213,7 @@ def single_trial(
             "stimulus_onset_1",
             block_type,
             target_position,
-            target_duration,
+            target_duration_cat,
             target_number,
         ),
         **response,
