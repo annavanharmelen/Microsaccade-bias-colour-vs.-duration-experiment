@@ -158,12 +158,21 @@ def main():
             avg_score = round(mean(block_performance))
 
             # Write this block's data to file
-            pd.DataFrame(data).to_csv(
-                rf"{settings['directory']}\data_session_{new_participants.session_number.iloc[-1]}{'_test' if testing else ''}.csv",
-                index=False,
-                mode="a",
-            )
-            data = []
+            if block_nr == 0:
+                pd.DataFrame(data).to_csv(
+                    rf"{settings['directory']}\data_session_{new_participants.session_number.iloc[-1]}_{current_block_type}.csv",
+                    header=True,
+                    index=False,
+                    mode="w",
+                )
+            else:
+                pd.DataFrame(data).to_csv(
+                    rf"{settings['directory']}\data_session_{new_participants.session_number.iloc[-1]}_{current_block_type}.csv",
+                    header=False,
+                    index=False,
+                    mode="a",
+                )
+            data.clear()
 
             # Break after end of block, unless it's the last block.
             # Experimenter can re-calibrate the eyetracker by pressing 'c' here.
@@ -226,6 +235,23 @@ def main():
 
         # Done!
         if finished_early:
+            # Save data collected up until this point in the block
+            if block_nr == 0:
+                pd.DataFrame(data).to_csv(
+                    rf"{settings['directory']}\data_session_{new_participants.session_number.iloc[-1]}_{current_block_type}.csv",
+                    header=True,
+                    index=False,
+                    mode="w",
+                )
+            else:
+                pd.DataFrame(data).to_csv(
+                    rf"{settings['directory']}\data_session_{new_participants.session_number.iloc[-1]}_{current_block_type}.csv",
+                    header=False,
+                    index=False,
+                    mode="a",
+                )
+
+            # Display quick_finish message
             quick_finish(settings)
         else:
             # Thanks for meedoen
