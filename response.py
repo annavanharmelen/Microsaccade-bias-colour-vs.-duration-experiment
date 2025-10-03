@@ -105,18 +105,21 @@ def get_colour_response(
     eyetracker,
     additional_objects=[],
 ):
+    mouse = event.Mouse(visible=False, win=settings["window"])
     keyboard: Keyboard = settings["keyboard"]
 
     # Check for pressed 'q'
     check_quit(keyboard)
 
+    # Check if mouse was prematurely clicked
+    _, prematurely_clicked = mouse.getPressed(getTime=True)
+
     # These timing systems should start at the same time, this is almost true
+    mouse.clickReset()
     idle_reaction_time_start = time()
-    keyboard.clock.reset()
 
     # Prepare the colour wheel and initialise variables
     offset = random.randint(0, 360)
-    mouse = event.Mouse(visible=True, win=settings["window"])
     mouse.getPos()
     marker = make_marker(RADIUS, INNER_RADIUS, settings)
     marker.colorSpace = "hsv"
@@ -194,11 +197,14 @@ def get_colour_response(
         )
         eyetracker.tracker.send_message(f"trig{trigger}")
 
-    mouse = event.Mouse(visible=False, win=settings["window"])
-
     return {
         "idle_reaction_time_in_ms": round(idle_reaction_time * 1000, 2),
         "response_time_in_ms": round(response_time * 1000, 2),
+        "premature_pressed": True if prematurely_clicked[0] else False,
+        "premature_key": "left_mouse_click" if prematurely_clicked[0] else None,
+        "premature_timing": (
+            round(prematurely_clicked[0] * 1000, 2) if prematurely_clicked[0] else None
+        ),
         "selected_colour": selected_colour,
         "colour_wheel_offset": offset,
         **evaluate_colour_response(selected_colour, target_colour, settings["colours"]),
@@ -228,6 +234,7 @@ def get_duration_response(
     testing,
     eyetracker,
 ):
+    mouse = event.Mouse(visible=False, win=settings["window"])
     keyboard: Keyboard = settings["keyboard"]
 
     # Check for pressed 'q'
@@ -237,17 +244,17 @@ def get_duration_response(
     draw_fixation_dot(stimuli["fixation_dot"], settings, [-1, -1, -1])
     settings["window"].flip()
 
+    # Check if mouse was prematurely clicked
+    _, prematurely_clicked = mouse.getPressed(getTime=True)
+
     # These timing systems should start at the same time, this is almost true
+    mouse.clickReset()
     idle_reaction_time_start = time()
-    keyboard.clock.reset()
 
-    # Check if _any_ keys were prematurely pressed
-    prematurely_pressed = [(p.name, p.rt) for p in keyboard.getKeys(waitRelease=False)]
-    keyboard.clearEvents()
-
-    # Wait for space key press
-    keyboard.clock.reset()
-    key = keyboard.waitKeys(keyList=["space"], waitRelease=False)
+    # Wait for mouse left-click
+    clicked = mouse.getPressed()[0]
+    while not clicked:
+        clicked = mouse.getPressed()[0]
     response_started = time()
 
     if not testing and eyetracker:
@@ -261,7 +268,7 @@ def get_duration_response(
         eyetracker.tracker.send_message(f"trig{trigger}")
 
     # Show target item while space is held
-    while keyboard.getState("space"):
+    while mouse.getPressed()[0]:
         draw_item(stimuli["stimulus"], [0, 0, 1], "middle", settings)
         settings["window"].flip()
 
@@ -279,17 +286,16 @@ def get_duration_response(
         )
         eyetracker.tracker.send_message(f"trig{trigger}")
 
-    # Make sure keystrokes made during this trial don't influence the next
-    keyboard.clearEvents()
+    # Make sure mouse clicks made during this trial don't influence the next
+    mouse.clickReset()
 
     return {
         "idle_reaction_time_in_ms": round(idle_reaction_time * 1000, 2),
         "response_time_in_ms": round(response_time * 1000, 2),
-        "key_pressed": key[0].name,
-        "premature_pressed": True if prematurely_pressed else False,
-        "premature_key": prematurely_pressed[0][0] if prematurely_pressed else None,
+        "premature_pressed": True if prematurely_clicked[0] else False,
+        "premature_key": "left_mouse_click" if prematurely_clicked[0] else None,
         "premature_timing": (
-            round(prematurely_pressed[0][1] * 1000, 2) if prematurely_pressed else None
+            round(prematurely_clicked[0] * 1000, 2) if prematurely_clicked[0] else None
         ),
         **evaluate_duration_response(target_duration, response_time * 1000),
     }
