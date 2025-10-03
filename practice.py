@@ -94,8 +94,8 @@ def practice_colour_wheel(stimuli, settings):
         settings["window"].flip()
         wait_for_key(["space"], settings["keyboard"])
 
-        # Make sure the keystroke from moving to the next part isn't saved
-        settings["keyboard"].clearEvents()
+        # Make sure any clicks made during the break aren't saved
+        event.Mouse(visible=False, win=settings["window"]).clickReset()
 
 
 def practice_duration_response(stimuli, settings):
@@ -103,8 +103,8 @@ def practice_duration_response(stimuli, settings):
     try:
         performance = []
 
-        # Make sure the keystroke from starting the experiment isn't saved
-        settings["keyboard"].clearEvents()
+        # Make sure any clicks made during the break aren't saved
+        event.Mouse(visible=False, win=settings["window"]).clickReset()
 
         while True:
             # Show fixation dot in preparation
@@ -177,8 +177,8 @@ def practice_duration_response(stimuli, settings):
         settings["window"].flip()
         wait_for_key(["space"], settings["keyboard"])
 
-        # Make sure the keystroke from moving to the next part isn't saved
-        settings["keyboard"].clearEvents()
+        # Make sure any clicks made during the break aren't saved
+        event.Mouse(visible=False, win=settings["window"]).clickReset()
 
 
 def practice_trials(block_type, stimuli, settings):
@@ -214,5 +214,5 @@ def practice_trials(block_type, stimuli, settings):
         settings["window"].flip()
         wait_for_key(["space"], settings["keyboard"])
 
-        # Make sure the keystroke from moving to the next part isn't saved
-        settings["keyboard"].clearEvents()
+        # Make sure any clicks made during the break aren't saved
+        event.Mouse(visible=False, win=settings["window"]).clickReset()

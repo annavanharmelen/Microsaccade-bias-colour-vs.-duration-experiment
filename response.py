@@ -197,6 +197,9 @@ def get_colour_response(
         )
         eyetracker.tracker.send_message(f"trig{trigger}")
 
+    # Make sure mouse clicks made during this trial don't influence the next
+    mouse.clickReset()
+
     return {
         "idle_reaction_time_in_ms": round(idle_reaction_time * 1000, 2),
         "response_time_in_ms": round(response_time * 1000, 2),

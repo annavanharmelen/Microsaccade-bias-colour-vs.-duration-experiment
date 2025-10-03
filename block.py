@@ -9,17 +9,7 @@ made by Anna van Harmelen, 2025
 import random
 from stimuli import show_text
 from response import wait_for_key
-
-
-def create_block_list(n_blocks, start_type):
-    if n_blocks % 2 != 0:
-        raise Exception(
-            "Expected number of blocks to be divisible by 2, otherwise both block types cannot occur equally often."
-        )
-
-    return n_blocks // 2 * [start_type] + n_blocks // 2 * [
-        "colour" if start_type == "duration" else "duration"
-    ]
+from psychopy import event
 
 
 def create_trial_list(n_trials):
@@ -73,8 +63,8 @@ def block_break(current_block, n_blocks, block_type, avg_score, settings, eyetra
     else:
         wait_for_key(["space"], settings["keyboard"])
 
-    # Make sure the keystroke from starting the experiment isn't saved
-    settings["keyboard"].clearEvents()
+    # Make sure any clicks made during the break aren't saved
+    event.Mouse(visible=False, win=settings["window"]).clickReset()
 
     return False
 
@@ -105,8 +95,8 @@ def long_break(n_blocks, block_type, avg_score, settings, eyetracker):
     else:
         wait_for_key(["space"], settings["keyboard"])
 
-    # Make sure the keystroke from starting the experiment isn't saved
-    settings["keyboard"].clearEvents()
+    # Make sure any clicks made during the break aren't saved
+    event.Mouse(visible=False, win=settings["window"]).clickReset()
 
     return False
 
