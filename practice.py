@@ -43,13 +43,13 @@ def practice_colour_wheel(stimuli, settings):
     # Practice response until participant chooses to stop
     try:
         performance = []
-        stimuli["stimulus"].pos = (0,0)
+        stimuli["stimulus"].pos = (0, 0)
 
         while True:
             # Create circle to indicate target colour
             target_colour = random.choice(settings["colours"])
             stimuli["stimulus"].setColor(target_colour, colorSpace="hsv")
-            
+
             response = get_colour_response(
                 stimuli,
                 target_colour,
