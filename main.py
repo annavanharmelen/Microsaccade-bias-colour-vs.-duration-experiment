@@ -22,7 +22,6 @@ from numpy import mean
 # from practice import practice
 import datetime as dt
 from block import (
-    create_block_list,
     create_trial_list,
     block_break,
     long_break,
@@ -30,7 +29,7 @@ from block import (
     quick_finish,
 )
 
-N_BLOCKS = 20
+N_BLOCKS = 10
 TRIALS_PER_BLOCK = 40
 
 
@@ -62,7 +61,7 @@ def main():
             "trials_completed": str,
         },
     )
-    new_participants, start_block_type = get_participant_details(
+    new_participants, current_block_type = get_participant_details(
         old_participants, testing
     )
 
@@ -75,6 +74,7 @@ def main():
         eyelinker = Eyelinker(
             new_participants.participant_number.iloc[-1],
             new_participants.session_number.iloc[-1],
+            current_block_type[0],
             settings["window"],
             settings["directory"],
         )
@@ -87,8 +87,8 @@ def main():
     # Initialise stimuli
     stimuli = initialise_all_stimuli(settings)
 
-    # Practice first part until participant wants to stop
-    practice(start_block_type, stimuli, settings)
+    # Practice relevant block type until participant wants to stop
+    practice(current_block_type, stimuli, settings)
 
     # Initialise some stuff
     start_of_experiment = time()
@@ -99,13 +99,7 @@ def main():
 
     # Start experiment
     try:
-        blocks = create_block_list(N_BLOCKS, start_block_type)
-
-        for block_nr, block_type in enumerate(
-            [start_block_type, "duration" if start_block_type == "colour" else "colour"]
-            if testing
-            else blocks
-        ):
+        for block_nr in range(2 if testing else N_BLOCKS):
 
             # Pseudo-randomly create conditions and target locations (so they're weighted)
             trials = create_trial_list(8 if testing else TRIALS_PER_BLOCK)
@@ -125,7 +119,7 @@ def main():
                 # Generate trial
                 report: dict = single_trial(
                     **trial_characteristics,
-                    block_type=block_type,
+                    block_type=current_block_type,
                     stimuli=stimuli,
                     settings=settings,
                     testing=testing,
@@ -149,9 +143,9 @@ def main():
                     }
                 )
 
-                if block_type == "colour":
+                if current_block_type == "colour":
                     block_performance.append(report["performance"])
-                elif block_type == "duration":
+                elif current_block_type == "duration":
                     block_performance.append(int(report["duration_diff_abs"]))
 
             # Calculate average performance score for most recent block
@@ -181,7 +175,7 @@ def main():
                 while calibrated:
                     calibrated = long_break(
                         N_BLOCKS,
-                        block_type,
+                        current_block_type,
                         avg_score,
                         settings,
                         eyetracker=None if testing else eyelinker,
@@ -189,15 +183,12 @@ def main():
                 if not testing:
                     eyelinker.start()
 
-                # Let participants practice second part before continueing
-                practice(blocks[block_nr + 1], stimuli, settings)
-
             elif block_nr + 1 < N_BLOCKS:
                 while calibrated:
                     calibrated = block_break(
                         block_nr + 1,
                         N_BLOCKS,
-                        block_type,
+                        current_block_type,
                         avg_score,
                         settings,
                         eyetracker=None if testing else eyelinker,
@@ -216,16 +207,9 @@ def main():
         if not testing:
             eyelinker.stop()
 
-        # Save all collected trial data to a new .csv
-        pd.DataFrame(data).to_csv(
-            rf"{settings['directory']}\data_session_{new_participants.session_number.iloc[-1]}{'_test' if testing else ''}.csv",
-            index=False,
-            mode="a",
-        )
-
         # Register how many trials this participant has completed
         new_participants.loc[new_participants.index[-1], "trials_completed"] = str(
-            len(data)
+            current_trial - 1
         )
 
         # Save participant data to existing .csv file
