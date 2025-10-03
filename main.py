@@ -157,6 +157,14 @@ def main():
             # Calculate average performance score for most recent block
             avg_score = round(mean(block_performance))
 
+            # Write this block's data to file
+            pd.DataFrame(data).to_csv(
+                rf"{settings['directory']}\data_session_{new_participants.session_number.iloc[-1]}{'_test' if testing else ''}.csv",
+                index=False,
+                mode="a",
+            )
+            data = []
+
             # Break after end of block, unless it's the last block.
             # Experimenter can re-calibrate the eyetracker by pressing 'c' here.
             calibrated = True
@@ -203,6 +211,7 @@ def main():
         pd.DataFrame(data).to_csv(
             rf"{settings['directory']}\data_session_{new_participants.session_number.iloc[-1]}{'_test' if testing else ''}.csv",
             index=False,
+            mode="a",
         )
 
         # Register how many trials this participant has completed
