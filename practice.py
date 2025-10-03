@@ -12,6 +12,7 @@ from stimuli import (
     INNER_RADIUS_COLOUR_WHEEL as INNER_RADIUS,
     show_text,
     draw_fixation_dot,
+    draw_item,
     create_stimulus_frame,
 )
 from response import (
@@ -42,19 +43,13 @@ def practice_colour_wheel(stimuli, settings):
     # Practice response until participant chooses to stop
     try:
         performance = []
+        stimuli["stimulus"].pos = (0,0)
 
         while True:
-
-            # Create square to indicate target colour
+            # Create circle to indicate target colour
             target_colour = random.choice(settings["colours"])
-            target_item = visual.Rect(
-                settings["window"],
-                width=settings["deg2pix"](2),
-                height=settings["deg2pix"](2),
-                fillColor=target_colour,
-                colorSpace="hsv",
-            )
-
+            stimuli["stimulus"].setColor(target_colour, colorSpace="hsv")
+            
             response = get_colour_response(
                 stimuli,
                 target_colour,
@@ -66,14 +61,14 @@ def practice_colour_wheel(stimuli, settings):
                 settings,
                 True,
                 None,
-                [target_item],
+                [stimuli["stimulus"]],
             )
 
             # Save for post-hoc feedback
             performance.append(int(response["performance"]))
 
             # Give feedback
-            target_item.draw()
+            stimuli["stimulus"].draw()
             visual.TextStim(
                 win=settings["window"],
                 text=f"{response['performance']}",
