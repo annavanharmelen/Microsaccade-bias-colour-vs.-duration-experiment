@@ -41,7 +41,9 @@ def generate_trial_characteristics(conditions, settings):
     elif target_position == "right":
         item_order = [2 if target_item == 1 else 1, target_item]
     else:
-        raise Exception(f"Expected 'left' or 'right', but received {target_position!r}.")
+        raise Exception(
+            f"Expected 'left' or 'right', but received {target_position!r}."
+        )
 
     if target_item == 1:
         target_colour, distractor_colour = stimuli_colours
@@ -195,6 +197,9 @@ def single_trial(
         f"{response['performance']}", settings["window"], (0, settings["deg2pix"](0.3))
     )
 
+    if response["premature_pressed"] == True:
+        show_text("!", settings["window"], (0, -settings["deg2pix"](0.3)))
+
     if not testing:
         trigger = get_trigger(
             "feedback_onset",
@@ -206,6 +211,7 @@ def single_trial(
         eyetracker.tracker.send_message(f"trig{trigger}")
 
     settings["window"].flip()
+
     sleep(0.25)
 
     return {
