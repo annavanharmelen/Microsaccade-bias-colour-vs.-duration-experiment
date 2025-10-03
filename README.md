@@ -22,3 +22,4 @@ To make sure the experiment runs correctly, open the set_up.py file to enter the
 
 ## Running
 The experiment runs in its entirety (including some explanation, practice trials and breaks) if you run `python main.py`.
+Note: this experiment consists of two sessions. Simply run the main experiment twice per participant, and it will automatically run the two different sessions and save the data separately. 
