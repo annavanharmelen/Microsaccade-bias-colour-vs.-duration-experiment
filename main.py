@@ -45,7 +45,7 @@ def main():
     logging.console.setLevel(logging.ERROR)
 
     # Set whether this is a test run or not
-    testing = True
+    testing = False
 
     # Get monitor and directory information
     monitor, directory = get_monitor_and_dir(testing)
