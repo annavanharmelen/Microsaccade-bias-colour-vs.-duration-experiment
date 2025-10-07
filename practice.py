@@ -187,6 +187,7 @@ def practice_trials(block_type, stimuli, settings):
 
     # Practice full trials of specific block type until participant chooses to stop
     try:
+        performance = []
         while True:
             target_position = random.choice(["left", "right"])
             target_duration = random.choice(["short", "long"])
@@ -204,10 +205,25 @@ def practice_trials(block_type, stimuli, settings):
                 eyetracker=None,
             )
 
+            # Save for post-hoc feedback
+            if block_type == "colour":
+                performance.append(report["performance"])
+            elif block_type == "duration":
+                performance.append(int(report["duration_diff_abs"]))
+
     except KeyboardInterrupt:
         settings["window"].flip()
+
+        avg_score = round(mean(performance)) if len(performance) > 0 else 0
+
+        if block_type == "duration":
+            break_string = f"In the previous block, your reports were on average off by {avg_score}."
+        elif block_type == "colour":
+            break_string = f"In the previous block, you scored {avg_score} on average."
+
         show_text(
-            "You decided to stop practicing the trials."
+            "You decided to stop practicing the trials.",
+            break_string,
             f"\n\nPress SPACE to start the experiment.",
             settings["window"],
         )
