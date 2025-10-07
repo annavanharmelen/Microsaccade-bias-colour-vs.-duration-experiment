@@ -81,4 +81,7 @@ def get_participant_details(existing_participants: pd.DataFrame, testing):
         [existing_participants, new_participant], ignore_index=True
     )
 
+    # Break before return so experimenter has a chance to show the instruction powerpoint
+    input("Instruction powerpoint shown? (y/n)  ")
+
     return all_participants, current_block
