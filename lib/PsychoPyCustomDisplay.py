@@ -154,7 +154,7 @@ class PsychoPyCustomDisplay(pylink.EyeLinkCustomDisplay):
                 self.image_buffer.append(self.pal[i])
 
         if line == totlines:
-            bufferv = self.image_buffer.tostring()
+            bufferv = self.image_buffer.tobytes()
             image = PIL.Image.frombytes("RGBX", (width, totlines), bufferv)
 
             psychopy_image = psychopy.visual.ImageStim(self.window, image=image)

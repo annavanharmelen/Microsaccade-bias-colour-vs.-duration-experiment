@@ -18,7 +18,7 @@ class Eyelinker:
 
     To initialise:
 
-       eyelinker = Eyelinker(participant, session, window, directory)
+       eyelinker = Eyelinker(participant, session, block_type_id, window, directory)
        eyelinker.calibrate()
     """
 

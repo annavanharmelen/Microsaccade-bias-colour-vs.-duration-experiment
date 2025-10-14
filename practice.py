@@ -215,13 +215,13 @@ def practice_trials(block_type, stimuli, settings):
         avg_score = round(mean(performance)) if len(performance) > 0 else 0
 
         if block_type == "duration":
-            break_string = f"In the previous block, your reports were on average off by {avg_score}."
+            break_string = f"\nIn the previous block, your reports were on average off by {avg_score}."
         elif block_type == "colour":
-            break_string = f"In the previous block, you scored {avg_score} on average."
+            break_string = f"\nIn the previous block, you scored {avg_score} on average."
 
         show_text(
-            "You decided to stop practicing the trials.",
-            break_string,
+            "You decided to stop practicing the trials." +
+            break_string +
             f"\n\nPress SPACE to start the experiment.",
             settings["window"],
         )
