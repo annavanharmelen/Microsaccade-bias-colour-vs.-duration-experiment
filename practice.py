@@ -87,8 +87,7 @@ def practice_colour_wheel(stimuli, settings):
         show_text(
             f"During this practice, your average score was {avg_score}. "
             "\nYou decided to stop practising the response dial. "
-            "Press SPACE to start practicing full trials."
-            "\n\nRemember to press Q to stop practising these trials and move on to the final practice part.",
+            "\n\nPress SPACE to start practicing full trials.",
             settings["window"],
         )
         settings["window"].flip()
@@ -170,8 +169,7 @@ def practice_duration_response(stimuli, settings):
         show_text(
             f"During this practice, your reports were on average off by {avg_score}. "
             "\nYou decided to stop practising the basic response. "
-            "Press SPACE to start practicing full trials."
-            "\n\nRemember to press Q to stop practising these trials and move on to the final practice part.",
+            "\n\nPress SPACE to start practicing full trials.",
             settings["window"],
         )
         settings["window"].flip()
