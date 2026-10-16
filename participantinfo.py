@@ -3,7 +3,7 @@ This file contains the functions necessary for
 collecting participant data.
 To run the 'microsaccade bias colour vs. duration' experiment, see main.py.
 
-made by Anna van Harmelen, 2025
+made by Anna van Harmelen, 2026
 """
 
 import random
@@ -84,4 +84,4 @@ def get_participant_details(existing_participants: pd.DataFrame, testing):
     # Break before return so experimenter has a chance to show the instruction powerpoint
     input("Instruction powerpoint shown? (y/n)  ")
 
-    return all_participants, current_block
+    return all_participants, current_block, current_session

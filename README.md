@@ -3,7 +3,7 @@
 A colour and duration reproduction task, designed to measure microsaccade bias in working memory, programmed in Python.
 
 ## Author
-Made by Anna van Harmelen in 2025, based on own earlier code, see: [Microsaccade bias duration experiment](https://github.com/annavanharmelen/Microsaccade-bias-duration-experiment) and [Microsaccade bias temporal separation experiment](https://github.com/annavanharmelen/Microsaccade-bias-temporal-separation-experiment).
+Made by Anna van Harmelen in 2026, based on own earlier code, see: [Microsaccade bias duration experiment](https://github.com/annavanharmelen/Microsaccade-bias-duration-experiment) and [Microsaccade bias temporal separation experiment](https://github.com/annavanharmelen/Microsaccade-bias-temporal-separation-experiment).
 
 ## Installation
 This experiment was created using the [PsychoPy library](https://www.psychopy.org), e.g. follow [these instructions](https://www.psychopy.org/download.html).

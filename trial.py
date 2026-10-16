@@ -4,17 +4,18 @@ creating and running a single trial start-to-finish,
 including eyetracker triggers.
 To run the 'microsaccade bias colour vs. duration' experiment, see main.py.
 
-made by Anna van Harmelen, 2025
+made by Anna van Harmelen, 2026
 """
 
 from psychopy.core import wait
 from time import time, sleep
-from response import get_colour_response, get_duration_response, check_quit
+from response import get_response, check_quit
 from stimuli import (
     draw_fixation_dot,
     create_stimulus_frame,
     create_cue_frame,
     show_text,
+    run_verification_frame,
 )
 from eyetracker import get_trigger
 import random
@@ -22,7 +23,7 @@ import random
 
 def generate_trial_characteristics(conditions, settings):
     # Extract condition information
-    target_position, target_duration_cat, target_item = conditions
+    target_position, target_duration_cat, target_congruency, target_item = conditions
 
     # Decide on random durations of stimuli
     duration_dict = {
@@ -64,12 +65,19 @@ def generate_trial_characteristics(conditions, settings):
     else:
         raise Exception(f"Expected 1 or 2, but received {target_item!r}.")
 
+    # Determine the final verification object
+    if target_congruency == "congruent":
+        verification_object = target_item
+    elif target_congruency == "incongruent":
+        verification_object = {1: 2, 2: 1}[target_item]
+
     return {
         "ITI": random.randint(500, 800),
         "stimuli_colours": stimuli_colours,
         "positions": item_positions,
         "item_orders": item_order,
         "target_number": target_item,
+        "target_congruency": target_congruency,
         "target_colour": target_colour,
         "distractor_colour": distractor_colour,
         "target_position": target_position,
@@ -77,6 +85,8 @@ def generate_trial_characteristics(conditions, settings):
         "target_duration_cat": target_duration_cat,
         "durations": durations,
         "duration_cats": duration_cats,
+        "verification_object": verification_object,
+        "ver_nr": verification_object - 1,
     }
 
 
@@ -97,6 +107,7 @@ def single_trial(
     positions,
     item_orders,
     target_number,
+    target_congruency,
     target_colour,
     distractor_colour,
     target_position,
@@ -104,6 +115,8 @@ def single_trial(
     target_duration_cat,
     durations,
     duration_cats,
+    verification_object,
+    ver_nr,
     block_type,
     stimuli,
     settings,
@@ -111,13 +124,13 @@ def single_trial(
     eyetracker=None,
 ):
     # Initial fixation cross to eliminate jitter caused by for loop
-    draw_fixation_dot(stimuli["fixation_dot"], settings)
+    draw_fixation_dot(stimuli["fixation_dot"])
 
     screens = [
         (0, lambda: 0 / 0, None),  # initial one to make life easier
         (
             ITI / 1000,
-            lambda: draw_fixation_dot(stimuli["fixation_dot"], settings),
+            lambda: draw_fixation_dot(stimuli["fixation_dot"]),
             None,
         ),
         (
@@ -127,7 +140,7 @@ def single_trial(
             ),
             "stimulus_onset_1",
         ),
-        (0.75, lambda: draw_fixation_dot(stimuli["fixation_dot"], settings), None),
+        (0.75, lambda: draw_fixation_dot(stimuli["fixation_dot"]), None),
         (
             durations[1] / 1000,
             lambda: create_stimulus_frame(
@@ -135,13 +148,13 @@ def single_trial(
             ),
             "stimulus_onset_2",
         ),
-        (0.75, lambda: draw_fixation_dot(stimuli["fixation_dot"], settings), None),
+        (0.75, lambda: draw_fixation_dot(stimuli["fixation_dot"]), None),
         (
             0.25,
             lambda: create_cue_frame(stimuli, target_number, settings),
             "cue_onset",
         ),
-        (1.00, lambda: draw_fixation_dot(stimuli["fixation_dot"], settings), None),
+        (1.00, lambda: draw_fixation_dot(stimuli["fixation_dot"]), None),
     ]
 
     # !!! The timing you pass to do_while_showing is the timing for the previously drawn screen. !!!
@@ -149,7 +162,12 @@ def single_trial(
         # Send trigger if not testing
         if not testing and frame:
             trigger = get_trigger(
-                frame, block_type, target_position, target_duration_cat, target_number
+                frame,
+                block_type,
+                target_position,
+                target_duration_cat,
+                target_congruency,
+                target_number,
             )
             eyetracker.tracker.send_message(f"trig{trigger}")
 
@@ -164,37 +182,42 @@ def single_trial(
     settings["window"].flip()
     wait(screens[-1][0])
 
+    # Show verification item
+    run_verification_frame(
+        block_type,
+        stimuli,
+        durations[ver_nr],
+        stimuli_colours[ver_nr],
+        settings,
+        testing,
+        eyetracker,
+        get_trigger(
+            "verification_onset",
+            block_type,
+            target_position,
+            target_duration_cat,
+            target_congruency,
+            target_number,
+        ),
+    )
+
     # Let participant respond, type depends on block type
-    if block_type == "colour":
-        response = get_colour_response(
-            stimuli,
-            target_colour,
-            target_duration,
-            target_duration_cat,
-            block_type,
-            target_position,
-            target_number,
-            settings,
-            testing,
-            eyetracker,
-        )
-    elif block_type == "duration":
-        response = get_duration_response(
-            stimuli,
-            target_duration,
-            target_duration_cat,
-            block_type,
-            target_position,
-            target_number,
-            settings,
-            testing,
-            eyetracker,
-        )
+    response = get_response(
+        stimuli,
+        target_duration_cat,
+        block_type,
+        target_position,
+        target_number,
+        target_congruency,
+        settings,
+        testing,
+        eyetracker,
+    )
 
     # Show performance
-    draw_fixation_dot(stimuli["fixation_dot"], settings)
+    draw_fixation_dot(stimuli["fixation_dot"])
     show_text(
-        f"{response['performance']}", settings["window"], (0, settings["deg2pix"](0.3))
+        f"{response['feedback']}", settings["window"], (0, settings["deg2pix"](0.3))
     )
 
     if response["premature_pressed"] == True:
@@ -206,6 +229,7 @@ def single_trial(
             block_type,
             target_position,
             target_duration_cat,
+            target_congruency,
             target_number,
         )
         eyetracker.tracker.send_message(f"trig{trigger}")
@@ -220,6 +244,7 @@ def single_trial(
             block_type,
             target_position,
             target_duration_cat,
+            target_congruency,
             target_number,
         ),
         **response,

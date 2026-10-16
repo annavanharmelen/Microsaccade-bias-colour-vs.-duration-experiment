@@ -3,7 +3,7 @@ This file contains the functions necessary for
 seting up the computer.
 To run the 'microsaccade bias colour vs. duration' experiment, see main.py.
 
-made by Anna van Harmelen, 2025
+made by Anna van Harmelen, 2026
 """
 
 from psychopy import visual
@@ -53,7 +53,7 @@ def get_settings(monitor: dict, directory):
     )
 
     # Determine colour range
-    num_segments = 360  # Number of segments in the wheel (degrees of hue)
+    num_segments = 360  # Number of colours to choose from
     colours = [
         [
             hue,  # Hue
@@ -65,7 +65,6 @@ def get_settings(monitor: dict, directory):
 
     return dict(
         deg2pix=lambda deg: round(deg / degrees_per_pixel),
-        num_segments=num_segments,
         colours=colours,
         window=window,
         keyboard=Keyboard(),

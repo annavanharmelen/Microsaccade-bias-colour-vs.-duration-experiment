@@ -1,6 +1,6 @@
 """
 Main script for running the 'microsaccade bias colour vs. duration' experiment
-made by Anna van Harmelen, 2025
+made by Anna van Harmelen, 2026
 
 see README.md for instructions if needed
 """
@@ -17,7 +17,7 @@ from stimuli import initialise_all_stimuli
 from trial import single_trial, generate_trial_characteristics
 from time import time
 from numpy import mean
-
+from math import ceil
 
 # from practice import practice
 import datetime as dt
@@ -29,8 +29,8 @@ from block import (
     quick_finish,
 )
 
-N_BLOCKS = 10
-TRIALS_PER_BLOCK = 40
+N_BLOCKS = 13
+TRIALS_PER_BLOCK = 32
 
 
 def main():
@@ -45,7 +45,7 @@ def main():
     logging.console.setLevel(logging.ERROR)
 
     # Set whether this is a test run or not
-    testing = False
+    testing = True
 
     # Get monitor and directory information
     monitor, directory = get_monitor_and_dir(testing)
@@ -61,7 +61,7 @@ def main():
             "trials_completed": str,
         },
     )
-    new_participants, current_block_type = get_participant_details(
+    new_participants, current_block_type, current_session = get_participant_details(
         old_participants, testing
     )
 
@@ -88,7 +88,7 @@ def main():
     stimuli = initialise_all_stimuli(settings)
 
     # Practice relevant block type until participant wants to stop
-    practice(current_block_type, stimuli, settings)
+    practice(current_block_type, stimuli, None if testing else eyelinker, settings)
 
     # Initialise some stuff
     start_of_experiment = time()
@@ -102,7 +102,7 @@ def main():
         for block_nr in range(2 if testing else N_BLOCKS):
 
             # Pseudo-randomly create conditions and target locations (so they're weighted)
-            trials = create_trial_list(8 if testing else TRIALS_PER_BLOCK)
+            trials = create_trial_list(16 if testing else TRIALS_PER_BLOCK)
 
             # Create temporary variable for saving block performance
             block_performance = []
@@ -143,13 +143,10 @@ def main():
                     }
                 )
 
-                if current_block_type == "colour":
-                    block_performance.append(report["performance"])
-                elif current_block_type == "duration":
-                    block_performance.append(int(report["duration_diff_abs"]))
+                block_performance.append(report["correct_response"])
 
             # Calculate average performance score for most recent block
-            avg_score = round(mean(block_performance))
+            avg_score = round(mean(block_performance) * 100)
 
             # Write this block's data to file
             if block_nr == 0:
@@ -171,7 +168,7 @@ def main():
             # Break after end of block, unless it's the last block.
             # Experimenter can re-calibrate the eyetracker by pressing 'c' here.
             calibrated = True
-            if block_nr + 1 == N_BLOCKS // 2:
+            if block_nr + 1 == ceil(N_BLOCKS // 2):
                 while calibrated:
                     calibrated = long_break(
                         N_BLOCKS,
@@ -239,7 +236,7 @@ def main():
             quick_finish(settings)
         else:
             # Thanks for meedoen
-            finish(N_BLOCKS, settings)
+            finish(N_BLOCKS, current_session, settings)
 
         core.quit()
 

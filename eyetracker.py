@@ -3,7 +3,7 @@ This file contains the functions necessary for
 connecting and using the eyetracker.
 To run the 'microsaccade bias colour vs. duration' experiment, see main.py.
 
-made by Anna van Harmelen, 2025, using code by Rose Nasrawi & Baiwei Liu
+made by Anna van Harmelen, 2026, using code by Ezra Nasrawi & Baiwei Liu
 """
 
 from lib import eyelinker
@@ -29,7 +29,9 @@ class Eyelinker:
         self.directory = directory
         self.window = window
         self.tracker = eyelinker.EyeLinker(
-            window=window, eye="RIGHT", filename=f"{session}_{participant}_{block_type_id}.edf"
+            window=window,
+            eye="RIGHT",
+            filename=f"{session}_{participant}_{block_type_id}.edf",
         )
         self.tracker.init_tracker()
 
@@ -47,13 +49,18 @@ class Eyelinker:
         self.tracker.close_edf()
 
 
-def get_trigger(frame, block_type, target_position, target_duration, target_item):
-    condition_marker = {"colour": 1, "duration": 9}[block_type]
+def get_trigger(
+    frame, block_type, target_position, target_duration, target_congruency, target_item
+):
+    condition_marker = {"colour": 1, "duration": 17}[block_type]
 
     if target_position == "right":
-        condition_marker += 4
+        condition_marker += 8
 
     if target_duration == "long":
+        condition_marker += 4
+
+    if target_congruency == "incongruent":
         condition_marker += 2
 
     if target_item == 2:
@@ -63,7 +70,7 @@ def get_trigger(frame, block_type, target_position, target_duration, target_item
         "stimulus_onset_1": "1",
         "stimulus_onset_2": "2",
         "cue_onset": "3",
-        "response_onset": "4",
-        "response_offset": "5",
+        "verification_onset": "4",
+        "response_given": "5",
         "feedback_onset": "6",
     }[frame] + str(condition_marker)
