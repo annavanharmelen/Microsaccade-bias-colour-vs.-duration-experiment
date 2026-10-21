@@ -123,6 +123,9 @@ def single_trial(
     testing,
     eyetracker=None,
 ):
+    # Start keyboard timer at start of each trial
+    settings["keyboard"].clock.reset()
+    
     # Initial fixation cross to eliminate jitter caused by for loop
     draw_fixation_dot(stimuli["fixation_dot"])
 

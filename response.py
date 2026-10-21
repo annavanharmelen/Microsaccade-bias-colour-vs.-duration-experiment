@@ -52,15 +52,12 @@ def get_response(
     check_quit(keyboard)
 
     # Check if _any_ keys were prematurely pressed
-    prematurely_pressed = [(key.value, key.t) for key in keyboard.getKeys()]
+    prematurely_pressed = [(key.value, key.rt) for key in keyboard.getKeys()]
     keyboard.clearEvents()
 
     # Draw fixation object and show response can start
     draw_fixation_dot(stimuli["fixation_dot"], "#000000")
     settings["window"].flip()
-
-    # These timing systems should start at the same time, this is almost true
-    keyboard.clock.reset()
     reaction_time_start = time()
 
     # Wait for response (for max 2 seconds)
