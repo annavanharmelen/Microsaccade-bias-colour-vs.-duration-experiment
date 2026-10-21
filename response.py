@@ -52,10 +52,10 @@ def get_response(
     check_quit(keyboard)
 
     # Check if _any_ keys were prematurely pressed
-    prematurely_pressed = [(p.name, p.rt) for p in keyboard.getKeys(waitRelease=False)]
+    prematurely_pressed = [(key.value, key.t) for key in keyboard.getKeys()]
     keyboard.clearEvents()
 
-    # Draw fixation object and show
+    # Draw fixation object and show response can start
     draw_fixation_dot(stimuli["fixation_dot"], "#000000")
     settings["window"].flip()
 
@@ -107,5 +107,5 @@ def wait_for_key(key_list, keyboard):
 
 
 def check_quit(keyboard):
-    if keyboard.getKeys("q"):
+    if keyboard.getKeys("q", clear=False):
         raise KeyboardInterrupt()
