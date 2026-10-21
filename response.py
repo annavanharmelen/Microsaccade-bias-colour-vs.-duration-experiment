@@ -90,10 +90,7 @@ def get_response(
         "reaction_time_in_ms": round(reaction_time * 1000, 2),
         "key_pressed": key,
         "premature_pressed": True if prematurely_pressed else False,
-        "premature_key": prematurely_pressed[0][0] if prematurely_pressed else None,
-        "premature_timing": (
-            round(prematurely_pressed[0][1] * 1000, 2) if prematurely_pressed else None
-        ),
+        "premature_presses": prematurely_pressed if prematurely_pressed else None,
         **evaluate_response(key, target_congruency),
     }
 
