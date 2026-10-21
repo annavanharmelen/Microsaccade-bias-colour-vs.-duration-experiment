@@ -60,7 +60,7 @@ def get_response(
     settings["window"].flip()
     reaction_time_start = time()
 
-    # Wait for response (for max 2 seconds)
+    # Wait for response (for max 3 seconds)
     key_pressed = keyboard.waitKeys(keyList=["up", "down", "q"], maxWait=3)
 
     response_given = time()
