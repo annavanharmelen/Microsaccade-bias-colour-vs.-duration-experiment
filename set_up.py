@@ -33,7 +33,7 @@ def get_monitor_and_dir(testing: bool):
             "distance": 70,  # in cm
         }
 
-        directory = r"C:\Users\m_bias_temporal\Desktop\temporal-separation data"
+        directory = r"C:/Users/Anna_vidi/Desktop/duration vs colour test data/"
 
     return monitor, directory
 
