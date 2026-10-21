@@ -75,7 +75,14 @@ def practice(block_type, stimuli, eyetracker, settings):
             settings["window"],
         )
         settings["window"].flip()
-        wait_for_key(["space"], settings["keyboard"])
+        if eyetracker:
+            keys = wait_for_key(["space", "c"], settings["keyboard"])
+            if "c" in keys:
+                eyetracker.calibrate()
+                eyetracker.start()
+                return True
+        else:
+            wait_for_key(["space"], settings["keyboard"])
 
         # Make sure keystrokes made during this trial don't influence the next
         settings["keyboard"].clearEvents()
