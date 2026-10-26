@@ -172,7 +172,6 @@ def main():
                 while calibrated:
                     calibrated = long_break(
                         N_BLOCKS,
-                        current_block_type,
                         avg_score,
                         settings,
                         eyetracker=None if testing else eyelinker,
@@ -185,7 +184,6 @@ def main():
                     calibrated = block_break(
                         block_nr + 1,
                         N_BLOCKS,
-                        current_block_type,
                         avg_score,
                         settings,
                         eyetracker=None if testing else eyelinker,
